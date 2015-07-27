@@ -14,17 +14,20 @@ def download(url, file_name):
     data = data.decode('windows-1250').encode('utf-8')
     out_file.write(data)
 
+def add_month(date):
+  y = date.year
+  m = date.month + 1
+  if m > 12:
+    y += 1
+    m -= 12
+  return datetime.date(y, m, 1)
+
 def get_months():
   today = datetime.date.today()
   i = start_date
   months = [i.strftime('%y%m')]
   while i.month != today.month or i.year != today.year:
-    y = i.year
-    m = i.month + 1
-    if m > 12:
-      y += 1
-      m -= 12
-    i = datetime.date(y, m, 1)
+    i = add_month(i)
     months.append(i.strftime('%y%m'))
   return months
 
