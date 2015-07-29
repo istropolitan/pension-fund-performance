@@ -108,21 +108,27 @@ def detail():
 
   show_detail(fund_category, fund)
 
+def load_data():
+  fund_categories = {}
+  pfp_files = os.listdir(data_dir)
+  for pfp_file in pfp_files:
+    load_file(os.path.join(data_dir, pfp_file))
+  list_data()
+
 def menu():
   print('Choose option:\n'
         ' d: detail\n'
+        ' l: load data\n'
         ' q: quit')
 
-pfp_files = os.listdir(data_dir)
-for pfp_file in pfp_files:
-  load_file(os.path.join(data_dir, pfp_file))
-list_data()
-
+load_data()
 menu()
 for cmd in sys.stdin:
   cmd = cmd.strip()
   if cmd == 'd':
     detail()
+  elif cmd == 'l':
+    load_data()
   elif cmd == 'q':
     break
   menu()
