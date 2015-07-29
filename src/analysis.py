@@ -24,6 +24,7 @@ class DataPoint:
 
 fund_categories = {}
 data_dir = 'data'
+out_dir = 'output'
 
 def process_line(line):
   line = line.strip()
@@ -81,16 +82,28 @@ def list_data():
         + time.strftime("%d/%m/%Y", fund.data[-1].date)  + ')')
     print()
 
-def show_detail(fund_category, fund):
+def detail():
+  fund_category, fund = pick_fund()
   print(fund_category.name + ' - ' + fund.name)
   for day in fund.data:
-    print(time.strftime('%Y-%m-%d', day.date), end='')
-    print(': ', end='')
-    print(day.value, end='')
-    print()
+    print(time.strftime('%Y-%m-%d', day.date) + ': ' + day.value)
   print()
 
-def detail():
+def export():
+  fund_category, fund = pick_fund()
+  print(fund_category.name + ' - ' + fund.name)
+  print('Choose a file name')
+  file_name = sys.stdin.readline().strip()
+  
+  with open(os.path.join(out_dir, file_name), 'w') as out_file:
+    for day in fund.data:
+      out_file.write(time.strftime('%Y-%m-%d', day.date) + ' ')
+    out_file.write('\n')
+    for day in fund.data:
+      out_file.write(day.value + ' ')
+  print('Data exported to \'' + file_name + '\'')
+
+def pick_fund():
   print('Choose a fund category')
   line = sys.stdin.readline().strip()
   fund_category_id = int(line)
@@ -106,7 +119,7 @@ def detail():
     if fund.number == fund_id:
       break
 
-  show_detail(fund_category, fund)
+  return fund_category, fund
 
 def load_data():
   fund_categories.clear()
@@ -132,6 +145,7 @@ def load_files(pfp_files):
 def menu():
   print('Choose option:\n'
         ' d: detail\n'
+        ' e: export data\n'
         ' l: load data\n'
         ' q: quit')
 
@@ -141,6 +155,8 @@ for cmd in sys.stdin:
   cmd = cmd.strip()
   if cmd == 'd':
     detail()
+  elif cmd == 'e':
+    export()
   elif cmd == 'l':
     load_data()
   elif cmd == 'q':
