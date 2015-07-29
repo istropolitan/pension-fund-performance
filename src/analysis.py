@@ -96,11 +96,22 @@ def export():
   file_name = sys.stdin.readline().strip()
   
   with open(os.path.join(out_dir, file_name), 'w') as out_file:
+    out_file.write(time.strftime('%Y-%m-%d', fund.data[0].date))
+    first = True
     for day in fund.data:
-      out_file.write(time.strftime('%Y-%m-%d', day.date) + ' ')
+      if first:
+        first = False
+        continue
+      out_file.write(' ' + time.strftime('%Y-%m-%d', day.date))
     out_file.write('\n')
+    out_file.write(fund.data[0].value)
+    first = True
     for day in fund.data:
-      out_file.write(day.value + ' ')
+      if first:
+        first = False
+        continue
+      out_file.write(' ' + day.value)
+    out_file.write('\n')
   print('Data exported to \'' + file_name + '\'')
 
 def pick_fund():
