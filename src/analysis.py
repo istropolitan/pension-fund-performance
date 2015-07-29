@@ -109,8 +109,22 @@ def detail():
   show_detail(fund_category, fund)
 
 def load_data():
-  fund_categories = {}
+  fund_categories.clear()
+  
+  print('Enter how many months to load')
+  line = sys.stdin.readline().strip()
+  months = int(line)
+  
   pfp_files = os.listdir(data_dir)
+  pfp_files = pfp_files[-months:]
+  load_files(pfp_files)
+
+def load_all_data():
+  fund_categories.clear()
+  pfp_files = os.listdir(data_dir)
+  load_files(pfp_files)
+
+def load_files(pfp_files):
   for pfp_file in pfp_files:
     load_file(os.path.join(data_dir, pfp_file))
   list_data()
@@ -121,7 +135,7 @@ def menu():
         ' l: load data\n'
         ' q: quit')
 
-load_data()
+load_all_data()
 menu()
 for cmd in sys.stdin:
   cmd = cmd.strip()
