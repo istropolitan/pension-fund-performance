@@ -37,7 +37,10 @@ def process_values(dates, values):
   data = []
   for d, v in zip(dates, values):
     dt = time.strptime(d, '%d.%m.%Y')
-    data.append(DataPoint(dt, v))
+    if v == '':
+      continue
+    value = float(v.replace(',', '.'))
+    data.append(DataPoint(dt, value))
   return data
 
 def load_file(file_name):
@@ -96,22 +99,9 @@ def export():
   file_name = sys.stdin.readline().strip()
   
   with open(os.path.join(out_dir, file_name), 'w') as out_file:
-    out_file.write(time.strftime('%Y-%m-%d', fund.data[0].date))
-    first = True
     for day in fund.data:
-      if first:
-        first = False
-        continue
-      out_file.write(' ' + time.strftime('%Y-%m-%d', day.date))
-    out_file.write('\n')
-    out_file.write(fund.data[0].value)
-    first = True
-    for day in fund.data:
-      if first:
-        first = False
-        continue
-      out_file.write(' ' + day.value)
-    out_file.write('\n')
+      out_file.write(time.strftime('%Y-%m-%d', day.date) + ' ' +
+                     str(day.value) + '\n')
   print('Data exported to \'' + file_name + '\'')
 
 def pick_fund():
